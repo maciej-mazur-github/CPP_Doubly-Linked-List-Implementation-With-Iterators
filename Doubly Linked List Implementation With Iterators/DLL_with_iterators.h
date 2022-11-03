@@ -1,5 +1,5 @@
 #pragma once
-#pragma once
+
 
 #include <iostream>
 #include <string.h>
@@ -8,56 +8,56 @@ using namespace std;
 
 
 template <class T>
-class list;
+class List;
 
 template <class T>
-class Iterator_Dll;
+class IteratorDll;
 
 template <class T>
-ostream& operator<<(ostream& out, list<T>& arg);
+ostream& operator<<(ostream& out, List<T>& arg);
 
 template <class T>
-class list
+class List
 {
 protected:
-	struct node
+	struct Node
 	{
-		T* obj_ptr;
-		node* next_node_ptr;
-		node* previous_node_ptr;
-		node()
-			: next_node_ptr(NULL), previous_node_ptr(NULL), obj_ptr(NULL) {}
+		T* objPtr;
+		Node* nextNodePtr;
+		Node* previousNodePtr;
+		Node()
+			: nextNodePtr(NULL), previousNodePtr(NULL), objPtr(NULL) {}
 	};
 
-	node* first_node_ptr;
-	node* last_node_ptr;
+	Node* firstNodePtr;
+	Node* lastNodePtr;
 
-	int element_counter;
-	typedef Iterator_Dll<T> iter_dll;
+	int elementCounter;
+	typedef IteratorDll<T> IterDll;
 
 public:
-	list()
+	List()
 	{
-		first_node_ptr = last_node_ptr = NULL;
-		element_counter = 0;
+		firstNodePtr = lastNodePtr = NULL;
+		elementCounter = 0;
 	}
 
-	friend ostream& operator<< <T>(ostream& out, list<T>& arg);
-	friend class Iterator_Dll<T>;
+	friend ostream& operator<< <T>(ostream& out, List<T>& arg);
+	friend class IteratorDll<T>;
 
-	void add_element(T& obj);
-	void add_element(T& obj, typename iter_dll& iter);
-	void add_element(T& obj, int position);
+	void addElement(T& obj);
+	void addElement(T& obj, typename IterDll& iter);
+	void addElement(T& obj, int position);
 
-	void remove_element();
-	void remove_element(typename iter_dll& iter);
-	void remove_element(int position);
+	void removeElement();
+	void removeElement(typename IterDll& iter);
+	void removeElement(int position);
 
 
 
-	void print_chosen_element(typename iter_dll& iter) const
+	void printChosenElement(typename IterDll& iter) const
 	{
-		if (!first_node_ptr)
+		if (!firstNodePtr)
 			return;
 
 		else
@@ -65,17 +65,17 @@ public:
 	}
 
 
-	~list();
+	~List();
 
 
 private:
-	void add_element_as_first(node* newly_added_node_ptr, iter_dll& iter);
-	void add_element_as_last(node* newly_added_node_ptr, iter_dll& iter);
-	void add_element_in_middle(node* newly_added_node_ptr, iter_dll& iter);
+	void addElementAsFirst(Node* newlyAddedNodePtr, IterDll& iter);
+	void addElementAsLast(Node* newlyAddedNodePtr, IterDll& iter);
+	void addElementInMiddle(Node* newlyAddedNodePtr, IterDll& iter);
 
-	void remove_last_element(iter_dll& iter);
-	void remove_first_element(iter_dll& iter);
-	void remove_middle_element(iter_dll& iter);
+	void removeLastElement(IterDll& iter);
+	void removeFirstElement(IterDll& iter);
+	void removeMiddleElement(IterDll& iter);
 };
 //##################################################################################
 //##################################################################################
@@ -83,77 +83,77 @@ private:
 
 
 template <class T>
-list<T>::~list()
+List<T>::~List()
 {
-	iter_dll iter(*this);
-	iter_dll temp_iter(*this);
+	IterDll iter(*this);
+	IterDll tempIter(*this);
 
 
-	if (!iter.chosen_node_ptr)
+	if (!iter.chosenNodePtr)
 		return;
 
-	for (; iter.chosen_node_ptr; )
+	for (; iter.chosenNodePtr; )
 	{
-		temp_iter.chosen_node_ptr = iter.chosen_node_ptr->next_node_ptr;
-		delete iter.chosen_node_ptr;
-		iter = temp_iter;
+		tempIter.chosenNodePtr = iter.chosenNodePtr->nextNodePtr;
+		delete iter.chosenNodePtr;
+		iter = tempIter;
 	}
 }
 
 
 template <class T>
-void list<T>::add_element(T& obj, int position)
+void List<T>::addElement(T& obj, int position)
 {
-	iter_dll iter(*this);
-	iter.move_to_position(position);
-	add_element(obj, iter);
+	IterDll iter(*this);
+	iter.moveToPosition(position);
+	addElement(obj, iter);
 }
 
 
 template <class T>
-void list<T>::remove_element(int position)
+void List<T>::removeElement(int position)
 {
-	iter_dll iter(*this);
-	iter.move_to_position(position);
-	remove_element(iter);
+	IterDll iter(*this);
+	iter.moveToPosition(position);
+	removeElement(iter);
 }
 
 
 
 template <class T>
-void list<T>::remove_element()
+void List<T>::removeElement()
 {
-	iter_dll iter(*this);
-	iter.set_chosen_as_last();
-	remove_element(iter);
+	IterDll iter(*this);
+	iter.setChosenAsLast();
+	removeElement(iter);
 }
 
 template <class T>
-void list<T>::remove_last_element(iter_dll& iter)
+void List<T>::removeLastElement(IterDll& iter)
 {
-	if (first_node_ptr == last_node_ptr)  // if this is 1-element list then after the operation the list becomes empty
+	if (firstNodePtr == lastNodePtr)  // if this is 1-element list then after the operation the list becomes empty
 	{
-		delete iter.chosen_node_ptr;    // free the memory
+		delete iter.chosenNodePtr;    // free the memory
 
-		first_node_ptr = last_node_ptr = iter.chosen_node_ptr = NULL;
+		firstNodePtr = lastNodePtr = iter.chosenNodePtr = NULL;
 		return;
 	}
 
-	else if (first_node_ptr->next_node_ptr == last_node_ptr)   // if this is a 2-element list
+	else if (firstNodePtr->nextNodePtr == lastNodePtr)   // if this is a 2-element list
 	{
-		delete iter.chosen_node_ptr;
-		last_node_ptr = iter.chosen_node_ptr = first_node_ptr;
-		first_node_ptr->next_node_ptr = NULL;
+		delete iter.chosenNodePtr;
+		lastNodePtr = iter.chosenNodePtr = firstNodePtr;
+		firstNodePtr->nextNodePtr = NULL;
 		return;
 	}
 
 	else
 	{
-		typename list<T>::node* penultimate = last_node_ptr->previous_node_ptr;
-		delete last_node_ptr;
-		penultimate->next_node_ptr = NULL;
-		last_node_ptr = penultimate;
-		iter.chosen_node_ptr = last_node_ptr;
+		typename List<T>::Node* penultimate = lastNodePtr->previousNodePtr;
+		delete lastNodePtr;
+		penultimate->nextNodePtr = NULL;
+		lastNodePtr = penultimate;
+		iter.chosenNodePtr = lastNodePtr;
 	}
 }
 
@@ -162,78 +162,77 @@ void list<T>::remove_last_element(iter_dll& iter)
 
 
 template <class T>
-void list<T>::remove_first_element(iter_dll& iter)
+void List<T>::removeFirstElement(IterDll& iter)
 {
-	// 1-element list scenario has been covered in remove_last_element()
+	// 1-element list scenario has been covered in removeLastElement()
 
-	if (first_node_ptr->next_node_ptr == last_node_ptr) // 2-element list scenario
+	if (firstNodePtr->nextNodePtr == lastNodePtr) // 2-element list scenario
 	{
-		delete first_node_ptr;
-		first_node_ptr = last_node_ptr;  // the list becomes a 1-element one
-		iter.chosen_node_ptr = first_node_ptr;
-		first_node_ptr->previous_node_ptr = NULL;
+		delete firstNodePtr;
+		firstNodePtr = lastNodePtr;  // the list becomes a 1-element one
+		iter.chosenNodePtr = firstNodePtr;
+		firstNodePtr->previousNodePtr = NULL;
 	}
 
 	else
 	{
-		node* second_node = first_node_ptr->next_node_ptr;
-		delete first_node_ptr;
-		first_node_ptr = second_node;
-		iter.chosen_node_ptr = first_node_ptr;
-		first_node_ptr->previous_node_ptr = NULL;
+		Node* second_Node = firstNodePtr->nextNodePtr;
+		delete firstNodePtr;
+		firstNodePtr = second_Node;
+		iter.chosenNodePtr = firstNodePtr;
+		firstNodePtr->previousNodePtr = NULL;
 	}
 }
 
 template <class T>
-void list<T>::remove_middle_element(iter_dll& iter)
+void List<T>::removeMiddleElement(IterDll& iter)
 {
-	typename list<T>::node* previous_node = iter.chosen_node_ptr->previous_node_ptr;
-	typename list<T>::node* next_node = iter.chosen_node_ptr->next_node_ptr;
+	typename List<T>::Node* previous_Node = iter.chosenNodePtr->previousNodePtr;
+	typename List<T>::Node* next_Node = iter.chosenNodePtr->nextNodePtr;
 
-	delete iter.chosen_node_ptr;
-	previous_node->next_node_ptr = next_node;
-	next_node->previous_node_ptr = previous_node;
-	iter.chosen_node_ptr = previous_node;
+	delete iter.chosenNodePtr;
+	previous_Node->nextNodePtr = next_Node;
+	next_Node->previousNodePtr = previous_Node;
+	iter.chosenNodePtr = previous_Node;
 }
 
 
 template <class T>
-void list<T>::remove_element(typename iter_dll& iter)
+void List<T>::removeElement(typename IterDll& iter)
 {
-	if (!first_node_ptr || !iter.chosen_node_ptr)
+	if (!firstNodePtr || !iter.chosenNodePtr)
 		return;
 
-	if (iter.chosen_node_ptr == last_node_ptr)
-		remove_last_element(iter);
+	if (iter.chosenNodePtr == lastNodePtr)
+		removeLastElement(iter);
 
-	else if (iter.chosen_node_ptr == first_node_ptr)
+	else if (iter.chosenNodePtr == firstNodePtr)
 	{
-		remove_first_element(iter);
-		//return;
+		removeFirstElement(iter);
 	}
 
 	else
-		remove_middle_element(iter);
+		removeMiddleElement(iter);
 
 
-	element_counter--;
+	elementCounter--;
 }
 
 
 
 
 template <class T>
-ostream& operator<<(ostream& out, list<T>& arg)
+ostream& operator<<(ostream& out, List<T>& arg)
 {
-	if (arg.element_counter == 0)
+	if (arg.elementCounter == 0)
 	{
 		cout << "\nThe list is empty\n";
 		return out;
 	}
 
-	Iterator_Dll<T> bishop(arg);
+	IteratorDll<T> bishop(arg);
 
-	for (int i = 1; i <= arg.element_counter; i++)
+	for (int i = 1; i <= arg.elementCounter; i++)
 	{
 		cout << *(bishop++) << "\t";
 
@@ -248,79 +247,79 @@ ostream& operator<<(ostream& out, list<T>& arg)
 
 
 template <class T>
-void list<T>::add_element_in_middle(node* newly_added_node_ptr, iter_dll& iter)
+void List<T>::addElementInMiddle(Node* newlyAddedNodePtr, IterDll& iter)
 {
-	node* previous_node = iter.chosen_node_ptr->previous_node_ptr;
-	previous_node->next_node_ptr = newly_added_node_ptr;
-	newly_added_node_ptr->previous_node_ptr = previous_node;
-	newly_added_node_ptr->next_node_ptr = iter.chosen_node_ptr;
-	iter.chosen_node_ptr->previous_node_ptr = newly_added_node_ptr;
-	iter.chosen_node_ptr = newly_added_node_ptr;
+	Node* previous_Node = iter.chosenNodePtr->previousNodePtr;
+	previous_Node->nextNodePtr = newlyAddedNodePtr;
+	newlyAddedNodePtr->previousNodePtr = previous_Node;
+	newlyAddedNodePtr->nextNodePtr = iter.chosenNodePtr;
+	iter.chosenNodePtr->previousNodePtr = newlyAddedNodePtr;
+	iter.chosenNodePtr = newlyAddedNodePtr;
 }
 
 
 template <class T>
-void list<T>::add_element_as_last(node* newly_added_node_ptr, iter_dll& iter)
+void List<T>::addElementAsLast(Node* newlyAddedNodePtr, IterDll& iter)
 {
-	last_node_ptr->next_node_ptr = newly_added_node_ptr;
-	newly_added_node_ptr->previous_node_ptr = last_node_ptr;
-	last_node_ptr = newly_added_node_ptr;
+	lastNodePtr->nextNodePtr = newlyAddedNodePtr;
+	newlyAddedNodePtr->previousNodePtr = lastNodePtr;
+	lastNodePtr = newlyAddedNodePtr;
 }
 
 
 
 template <class T>
-void list<T>::add_element_as_first(node* newly_added_node_ptr, iter_dll& iter)
+void List<T>::addElementAsFirst(Node* newlyAddedNodePtr, IterDll& iter)
 {
-	if (!first_node_ptr)   // in case the list is empty yet
+	if (!firstNodePtr)   // in case the list is empty yet
 	{
-		first_node_ptr = newly_added_node_ptr;
-		last_node_ptr = newly_added_node_ptr;
+		firstNodePtr = newlyAddedNodePtr;
+		lastNodePtr = newlyAddedNodePtr;
 	}
 	else
 	{
-		newly_added_node_ptr->next_node_ptr = first_node_ptr;
-		first_node_ptr->previous_node_ptr = newly_added_node_ptr;
-		first_node_ptr = newly_added_node_ptr;
-		iter.chosen_node_ptr = first_node_ptr;
+		newlyAddedNodePtr->nextNodePtr = firstNodePtr;
+		firstNodePtr->previousNodePtr = newlyAddedNodePtr;
+		firstNodePtr = newlyAddedNodePtr;
+		iter.chosenNodePtr = firstNodePtr;
 	}
 }
 
 
 template <class T>
-void list<T>::add_element(T& obj, typename iter_dll& iter)
+void List<T>::addElement(T& obj, typename IterDll& iter)
 {
-	node* new_node_ptr = new node;
-	new_node_ptr->obj_ptr = &obj;
+	Node* newNodePtr = new Node;
+	newNodePtr->objPtr = &obj;
 
-	if (!first_node_ptr || iter.chosen_node_ptr == first_node_ptr)
-		add_element_as_first(new_node_ptr, iter);
+	if (!firstNodePtr || iter.chosenNodePtr == firstNodePtr)
+		addElementAsFirst(newNodePtr, iter);
 	else
 	{
-		if (!iter.chosen_node_ptr)
+		if (!iter.chosenNodePtr)
 		{
-			add_element_as_last(new_node_ptr, iter);
+			addElementAsLast(newNodePtr, iter);
 		}
 		else
 		{
-			add_element_in_middle(new_node_ptr, iter);
+			addElementInMiddle(newNodePtr, iter);
 		}
 	}
 
-	element_counter++;
+	elementCounter++;
 }
 
 
 
 template <class T>
-void list<T>::add_element(T& obj)
+void List<T>::addElement(T& obj)
 {
-	node* new_node_ptr = new node;
-	new_node_ptr->obj_ptr = &obj;
+	Node* newNodePtr = new Node;
+	newNodePtr->objPtr = &obj;
 
-	iter_dll iter(*this);
-	iter.set_chosen_after_last();
-	add_element(obj, iter);
+	IterDll iter(*this);
+	iter.setChosenAfterLast();
+	addElement(obj, iter);
 }
 
 
@@ -334,107 +333,107 @@ void list<T>::add_element(T& obj)
 
 
 template <class T>
-class Iterator_Dll;
+class IteratorDll;
 
 template <class T>
-class list;
+class List;
 
 template <class T>
-class Iterator_Dll
+class IteratorDll
 {
-	friend class list<T>;
-	list<T>& dll;
-	typename list<T>::node* chosen_node_ptr;
+	friend class List<T>;
+	List<T>& dll;
+	typename List<T>::Node* chosenNodePtr;
 public:
-	Iterator_Dll(typename list<T>& worklist)
+	IteratorDll(typename List<T>& worklist)
 		: dll(worklist)
 	{
-		chosen_node_ptr = worklist.first_node_ptr;
+		chosenNodePtr = worklist.firstNodePtr;
 	}
 
 
 	T& operator*();
 
 
-	Iterator_Dll& set_chosen_as_first()
+	IteratorDll& setChosenAsFirst()
 	{
-		if (dll.first_node_ptr)
-			chosen_node_ptr = dll.first_node_ptr;
+		if (dll.firstNodePtr)
+			chosenNodePtr = dll.firstNodePtr;
 
 		return *this;
 	}
 
-	Iterator_Dll& set_chosen_as_last()
+	IteratorDll& setChosenAsLast()
 	{
-		if (dll.last_node_ptr)
-			chosen_node_ptr = dll.last_node_ptr;
+		if (dll.lastNodePtr)
+			chosenNodePtr = dll.lastNodePtr;
 
 		return *this;
 	}
 
-	Iterator_Dll& set_chosen_after_last()
+	IteratorDll& setChosenAfterLast()
 	{
-		chosen_node_ptr = NULL;
+		chosenNodePtr = NULL;
 		return *this;
 	}
 
-	Iterator_Dll& operator++()
+	IteratorDll& operator++()
 	{
-		if (!chosen_node_ptr)
+		if (!chosenNodePtr)
 			return *this;
 
-		chosen_node_ptr = chosen_node_ptr->next_node_ptr;
+		chosenNodePtr = chosenNodePtr->nextNodePtr;
 		return *this;
 	}
 
-	Iterator_Dll operator++(int)
+	IteratorDll operator++(int)
 	{
-		if (!chosen_node_ptr)
+		if (!chosenNodePtr)
 			return *this;
 
-		Iterator_Dll temp = *this;
-		chosen_node_ptr = chosen_node_ptr->next_node_ptr;
+		IteratorDll temp = *this;
+		chosenNodePtr = chosenNodePtr->nextNodePtr;
 		return temp;
 	}
 
-	Iterator_Dll& operator--()
+	IteratorDll& operator--()
 	{
-		if (!chosen_node_ptr)
+		if (!chosenNodePtr)
 			return *this;
 
-		chosen_node_ptr = chosen_node_ptr->previous_node_ptr;
+		chosenNodePtr = chosenNodePtr->previousNodePtr;
 		return *this;
 	}
 
-	Iterator_Dll& operator=(const Iterator_Dll& rhs)
+	IteratorDll& operator=(const IteratorDll& rhs)
 	{
 		dll = rhs.dll;
-		chosen_node_ptr = rhs.chosen_node_ptr;
+		chosenNodePtr = rhs.chosenNodePtr;
 		return *this;
 	}
 
 
-	Iterator_Dll operator--(int)
+	IteratorDll operator--(int)
 	{
-		if (!chosen_node_ptr)
+		if (!chosenNodePtr)
 			return *this;
 
-		Iterator_Dll temp = *this;
-		chosen_node_ptr = chosen_node_ptr->previous_node_ptr;
+		IteratorDll temp = *this;
+		chosenNodePtr = chosenNodePtr->previousNodePtr;
 		return temp;
 	}
 
-	int operator==(const Iterator_Dll& rhs)
+	int operator==(const IteratorDll& rhs)
 	{
-		if (chosen_node_ptr == rhs.chosen_node_ptr)
+		if (chosenNodePtr == rhs.chosenNodePtr)
 			return 1;
 		else
 			return 0;
 	}
 
-	int operator!=(const Iterator_Dll& rhs)
+	int operator!=(const IteratorDll& rhs)
 	{
-		if (chosen_node_ptr == rhs.chosen_node_ptr)
+		if (chosenNodePtr == rhs.chosenNodePtr)
 			return 0;
 		else
 			return 1;
@@ -442,22 +441,22 @@ public:
 
 	operator int()
 	{
-		if (chosen_node_ptr != NULL)
+		if (chosenNodePtr != NULL)
 			return 1;
 		else
 			return 0;
 	}
 
-	Iterator_Dll& move_to_position(int position)
+	IteratorDll& moveToPosition(int position)
 	{
-		if (!dll.first_node_ptr)
+		if (!dll.firstNodePtr)
 			return *this;
 
-		if (position >= dll.element_counter)
-			set_chosen_after_last();
+		if (position >= dll.elementCounter)
+			setChosenAfterLast();
 		else
 		{
-			set_chosen_as_first();
+			setChosenAsFirst();
 
 			for (int i = 0; i < position; i++)
 			{
@@ -474,10 +473,10 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template <class T>
-T& Iterator_Dll<T>::operator*()
+T& IteratorDll<T>::operator*()
 {
-	if (chosen_node_ptr)
-		return *(chosen_node_ptr->obj_ptr);
+	if (chosenNodePtr)
+		return *(chosenNodePtr->objPtr);
 
 	else
 	{
@@ -490,10 +489,10 @@ T& Iterator_Dll<T>::operator*()
 
 
 template <>
-string& Iterator_Dll<string>::operator*()
+string& IteratorDll<string>::operator*()
 {
-	if (chosen_node_ptr)
-		return *(chosen_node_ptr->obj_ptr);
+	if (chosenNodePtr)
+		return *(chosenNodePtr->objPtr);
 
 	else
 	{
