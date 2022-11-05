@@ -19,6 +19,7 @@ ostream& operator<<(ostream& out, List<T>& arg);
 template <class T>
 class List
 {
+	string listName;
 protected:
 	struct Node
 	{
@@ -36,10 +37,11 @@ protected:
 	typedef IteratorDll<T> IterDll;
 
 public:
-	List()
+	List(string name = "No-name List")
 	{
 		firstNodePtr = lastNodePtr = NULL;
 		elementCounter = 0;
+		listName = name;
 	}
 
 	friend ostream& operator<< <T>(ostream& out, List<T>& arg);
@@ -224,9 +226,12 @@ void List<T>::removeElement(typename IterDll& iter)
 template <class T>
 ostream& operator<<(ostream& out, List<T>& arg)
 {
+	cout << "********************\n";
+	cout << arg.listName << " current status:\n";
+
 	if (arg.elementCounter == 0)
 	{
-		cout << "\nThe list is empty\n";
+		cout << "\nThe list " << arg.listName << " is empty\n";
 		return out;
 	}
 
@@ -236,9 +241,10 @@ ostream& operator<<(ostream& out, List<T>& arg)
 	{
 		cout << *(bishop++) << "\t";
 
-		if (!(i % 3) && i != 0)
-			cout << "\n";
+		/*if (!(i % 3) && i != 0)
+			cout << "\n";*/
 	}
+	cout << "\n********************\n";
 
 	out << endl << endl;
 	return out;
@@ -480,24 +486,9 @@ T& IteratorDll<T>::operator*()
 
 	else
 	{
-		T temp = NULL;
-		return temp;
+		throw "Iterator pointing at nothing";
 	}
 
 }
 
 
-
-template <>
-string& IteratorDll<string>::operator*()
-{
-	if (chosenNodePtr)
-		return *(chosenNodePtr->objPtr);
-
-	else
-	{
-		string temp;
-		return temp;
-	}
-
-}
